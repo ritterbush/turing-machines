@@ -1,5 +1,4 @@
-# turing-machines
-## Turning machine implementations
+# Turning machine implementations
 
 This repo explores different implementations of Turing machines.
 
