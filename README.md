@@ -8,8 +8,6 @@ But the cart does not run just a single command and that's it. The cart runs a c
 
 These implementations assume that Turing programs are in the following form:
 
-A Turing program has the following form:
-
     Cmd0 Cmd1 NextState0 NextState1
     Cmd0 Cmd1 NextState0 NextState1
     Cmd0 Cmd1 NextState0 NextState1
