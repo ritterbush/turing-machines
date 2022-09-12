@@ -7,7 +7,7 @@ Turing machines are here understood in a most basic form -- as a cart on a block
 
 But the cart does not run just a single command and that's it. The cart has to run a command and go to the next command, and so on, as long as there are commands to run. The cart does this by being in a particular state, signified by a number, which references a list of commands and states in a turing program. Finally, the command to run in the list, as well as the cart's next state, is determined by whether or not the cart is at a symbol. The cart is finished runing commands when the cart is in state 0, the halting state.
 
-These implementations assume that Turing programs are in the following core form:
+These implementations assume that Turing programs are in the following form:
 
 Cmd0 Cmd1 NextState0 NextState1\
 Cmd0 Cmd1 NextState0 NextState1\
