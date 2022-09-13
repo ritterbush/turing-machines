@@ -31,3 +31,9 @@ A concrete example:
 Relatively simple, this Turing program tells the cart (in state 1, which references line 1) to erase the symbol below it and go left, if it is has no symbol below it (so just go left, since there's no symbol to erase), or else put a symbol below it and go left, if it is has a symbol below it (so just go left, since there's already a symbol below it), and go to the next state, which references line 2. At line 2, the cart is to put a symbol below it and go right, if it is has no symbol below it, or else erase the symbol below it and go right, if it is has a symbol below it, and go to the next state. Since the next state is 0, the cart will halt and finish executing the program.
 
 A repo of Turing programs may be found at [https://github.com/ritterbush/turing-machine-programs](https://github.com/ritterbush/turing-machine-programs).
+
+## Running a Turing machine implementation
+
+For Haskell files, enter
+`ghc DataSet.hs --make -o TuringDataSet` where the final argument is the name of the executable to be created. And run it:
+`./TuringDataSet`
