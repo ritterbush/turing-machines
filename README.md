@@ -34,7 +34,7 @@ A repo of Turing programs may be found at [https://github.com/ritterbush/turing-
 
 ## Running a Turing machine implementation
 
-For Haskell files, first [install GHC](https://www.haskell.org/ghcup/). Then compile a `.hs` file with
+For Haskell files, first [install GHC](https://www.haskell.org/ghcup/). Then compile an `.hs` file with
 
 `ghc DataSet.hs --make -o TuringDataSet`
 
