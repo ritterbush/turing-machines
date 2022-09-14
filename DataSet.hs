@@ -1,11 +1,13 @@
 module Main where
 
 import qualified Data.Set as Set
+import Text.Read
+import System.IO
 
 data Cmd = L | M | R | S
     deriving (Eq, Show, Read)
-type StateNum = Int
-type Cmds = [(Cmd, Cmd, StateNum, StateNum)]
+type State = Int
+type Cmds = [(Cmd, Cmd, State, State)]
 type Track = Set.Set Int
 type CartPos = Int
 
@@ -22,7 +24,7 @@ runCmd atZero cmd cartPos track = if atZero
         R -> (cartPos + 1, Set.delete cartPos track)
         S -> (cartPos + 1, track)
 
-runCmds:: Cmds -> StateNum -> (CartPos,Track) -> IO ()
+runCmds:: Cmds -> State -> (CartPos,Track) -> IO ()
 runCmds _ 0 ct = do print ct
                     print "Computation Successful!"
 runCmds [] stn ct = do print ct
@@ -41,7 +43,7 @@ runCmds cmds stn ct@(cartPos, track) = if stn < 0 then do print ct
                            where
                            atZero = Set.notMember cartPos track
 
-easy :: [(Cmd, Cmd, StateNum, StateNum)]
+easy :: [(Cmd, Cmd, State, State)]
 easy = [
     (L, L, 2, 2),
     (M, M, 3, 3),
@@ -50,10 +52,10 @@ easy = [
 
 -- s/'//g, s/\[/(/, s/\]/)/. From pow.tm
 
-mul :: [(Cmd, Cmd, StateNum, StateNum)]
+mul :: [(Cmd, Cmd, State, State)]
 mul = [(R, R, 2, 2),(R, S, 13, 3),(R, S, 4, 3),(R, R, 4, 5),(M, S, 11, 6),(R, S, 7, 6),(M, S, 9, 8),(M, S, 9, 8),(L, M, 10, 9),(R, M, 4, 10),(L, M, 11, 12),(R, M, 1, 12),(S, M, 13, 14),(R, M, 0, 14)]
 
-pow :: [(Cmd, Cmd, StateNum, StateNum)]
+pow :: [(Cmd, Cmd, State, State)]
 pow = [
     (S, S, 2, 6),
     (L, R, 3, 4),
