@@ -128,17 +128,17 @@ bb5Program = [(S, M, 2, 3),(S, S, 3, 2), (S, L, 4, 5), (M, M, 1, 4), (S, L, 0, 1
 runFunc :: String -> Cmds
 runFunc "mul" = mul
 runFunc "pow" = pow
-runFunc "bb2Program" = bb2Program
-runFunc "bb3Program" = bb3Program
-runFunc "bb3D2Program" = bb3D2Program
-runFunc "bb4Program" = bb4Program
-runFunc "bb5Program" = bb5Program
+runFunc "bb2" = bb2Program
+runFunc "bb3" = bb3Program
+runFunc "bb3D2" = bb3D2Program
+runFunc "bb4" = bb4Program
+runFunc "bb5" = bb5Program
 runFunc "easy" = easy
 runFunc _ = easy
 
 main = do
     putStrLn "Enter in one of the following commands:"
-    putStrLn "mul, pow, bb#Program (replace # with a number 2-5), bb3D2Program, or easy"
+    putStrLn "mul, pow, bb# (replace # with a number 2-5), bb3D2, or easy"
     cmdToRun <- getLine
     putStrLn "Enter a cart position on the track"
     crtPos <- getLine
