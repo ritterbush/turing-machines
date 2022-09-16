@@ -155,6 +155,27 @@ lineToCmds ln cmdsStr = if length cmdsLst /= 4
                         cmd1 = cmdsLst !! 2
                         nst1 = cmdsLst !! 3
 
+linesToTuple :: Int -> [String] -> [(Int, String)]
+linesToTuple _ [] = [(0, [])]
+linesToTuple int (x:ys) = (int, x) : linesToTuple (int + 1) ys
+
+contentsToECmds :: String -> [Either String Cmds]
+contentsToECmds contents = map (uncurry lineToCmds) (init (linesToTuple 1 (lines contents)))
+
+isLeft :: Either a b -> Bool
+isLeft (Left _) = True
+isLeft (Right _) = False
+
+isRight :: Either a b -> Bool
+isRight (Left _) = False
+isRight (Right _) = True
+
+validationFailed :: [Either String Cmds] -> [Either String Cmds]
+validationFailed = filter isLeft
+
+validationSucceeded :: [Either String Cmds] -> [Either String Cmds]
+validationSucceeded = filter isRight
+
 main = do
     putStrLn "Enter in one of the following commands:"
     putStrLn "mul, pow, bb# (replace # with a number 2-5), bb3D2, or easy"
