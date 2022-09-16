@@ -138,22 +138,17 @@ runFunc "bb5" = bb5Program
 runFunc "easy" = easy
 runFunc _ = easy
 
-type Line = Int
+type LineNum = Int
 
-lineToCmds :: Line -> String -> Either String (Maybe Cmds)
+lineToCmds :: LineNum -> String -> Either String Cmds
 lineToCmds ln [] = Left ("No commands found on line " ++ show ln)
-lineToCmds ln cmdsStr = if length cmdsLst /= 4
-                        then Left ("Invalid program on line " ++ show ln)
-                        else case (readMaybe fStr :: Maybe Cmds) of
+lineToCmds ln cmdsStr = case (readMaybe $ cmdsLst fStr :: Maybe Cmds) of
                             Nothing -> Left ("Invalid program on line " ++ show ln)
-                            Just x  -> Right (Just x)
+                            Just x  -> Right x
                         where
-                        cmdsLst = words cmdsStr
-                        fStr = "[(" ++ cmd0 ++ ", " ++ cmd1 ++ ", " ++ nst0 ++ ", " ++ nst1 ++ ")]"
-                        cmd0 = cmdsLst !! 0
-                        nst0 = cmdsLst !! 1
-                        cmd1 = cmdsLst !! 2
-                        nst1 = cmdsLst !! 3
+                        fStr = words cmdsStr
+                        cmdsLst (cmd0:cmd1:nst0:nst1:ys) = "[(" ++ cmd0 ++ ", " ++ cmd1 ++ ", " ++ nst0 ++ ", " ++ nst1 ++ ")]"
+                        cmdsLst _ = ""
 
 linesToTuple :: Int -> [String] -> [(Int, String)]
 linesToTuple _ [] = [(0, [])]
