@@ -6,7 +6,7 @@ Turing machines are here understood in a most basic form -- as a cart on a block
 
 But the cart does not run just a single command and that's it. The cart runs a command and goes to the next command, and so on, as long as there are commands to run. The cart does this by being in a particular state, signified by a number, which references a list of commands and states in a turing program. Finally, the command to run in the list, as well as the cart's next state, is determined by whether or not the cart is at a symbol. The cart is finished running commands when the cart is in state 0, the halting state.
 
-These implementations assume that Turing programs are in the following form:
+A Turing program has Turing state commands, which are lines of the following form:
 
     Cmd0 NextState0 Cmd1 NextState1
     Cmd0 NextState0 Cmd1 NextState1
@@ -29,6 +29,8 @@ A concrete example:
     S 0 R 0
 
 Relatively simple, this Turing program tells the cart (in state 1, which references line 1) to erase the symbol below it and go left, if it is has no symbol below it (so just go left, since there's no symbol to erase) and go to the next state, state 2; or else put a symbol below it and go left, if it is has a symbol below it (so just go left, since there's already a symbol below it), and go to the next state, state 2, which references line 2. At line 2, the cart is to put a symbol below it and go right, if it is has no symbol below it, or else erase the symbol below it and go right, if it is has a symbol below it, and go to the next state. Since either way the next state is 0, the cart will halt and finish executing the program.
+
+Comments are allowed. Any text that is not a Turing state command line at the start of the line is considered to be a comment. This includes text that follows a Turing state command on the same line.
 
 A repo of Turing programs may be found at [https://github.com/ritterbush/turing-machine-programs](https://github.com/ritterbush/turing-machine-programs).
 
