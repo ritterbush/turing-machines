@@ -130,59 +130,77 @@ bb4Program = [(S, 2, M, 2),(M, 1, L, 3), (S, 0, M, 4), (S, 4, R, 1)]
 bb5Program :: Cmds
 bb5Program = [(S, 2, M, 3),(S, 3, S, 2), (S, 4, L, 5), (M, 1, M, 4), (S, 0, L, 1)]
 
--- Helper to get cmds via a String entered in main
-runFunc :: String -> Cmds
-runFunc "mul" = mul
-runFunc "pow" = pow
-runFunc "bb2" = bb2Program
-runFunc "bb3" = bb3Program
-runFunc "bb3D2" = bb3D2Program
-runFunc "bb4" = bb4Program
-runFunc "bb5" = bb5Program
-runFunc "easy" = easy
-runFunc _ = easy
-
 type LineNum = Int
+type Line = String
 
-lineToCmds :: LineNum -> String -> Either String Cmds
+lineToCmds :: LineNum -> Line -> Either String Cmds
 lineToCmds ln [] = Left ("No commands found on line " ++ show ln)
-lineToCmds ln cmdsStr = case (readMaybe $ cmdsLst fStr :: Maybe Cmds) of
+lineToCmds ln l = case (readMaybe $ cmdsLst wordsLst :: Maybe Cmds) of
                             Nothing -> Left ("Invalid program on line " ++ show ln)
                             Just x  -> Right x
                         where
-                        fStr = words cmdsStr
-                        cmdsLst (cmd0:cmd1:nst0:nst1:ys) = "[(" ++ cmd0 ++ ", " ++ cmd1 ++ ", " ++ nst0 ++ ", " ++ nst1 ++ ")]"
+                        wordsLst = words l -- gets words separated by whitespace
+                        cmdsLst (cmd0:cmd1:nst0:nst1:ys) = "[(" ++ cmd0 ++ ", " ++ cmd1 ++ ", " ++ nst0 ++ ", " ++ getLeadNumerals nst1 ++ ")]"
                         cmdsLst _ = ""
 
-linesToTuple :: Int -> [String] -> [(Int, String)]
+-- Keep any leading numerals of a String; to drop any comments that follow
+getLeadNumerals :: String -> String
+getLeadNumerals []     = ""           -- x is a Char, so convert to String just by enclosing it in a list
+getLeadNumerals (x:ys) = case readMaybe [x] :: Maybe Int of -- Safe to use Int since x cannot be > a single digit
+                            Just x -> show x ++ getLeadNumerals ys
+                            Nothing -> ""
+
+-- Helper to pair line number with line contents in a list,
+-- so we can map to it uncurried lineToCmds, which takes (LineNum, Line).
+linesToTuple :: LineNum -> [Line] -> [(LineNum, Line)]
 linesToTuple _ [] = [(0, [])]
 linesToTuple int (x:ys) = (int, x) : linesToTuple (int + 1) ys
 
+-- File contents to Either String Cmds for each line
 contentsToECmds :: String -> [Either String Cmds]
 contentsToECmds contents = map (uncurry lineToCmds) (init (linesToTuple 1 (lines contents)))
 
-isLeft :: Either a b -> Bool
-isLeft (Left _) = True
-isLeft (Right _) = False
+foundCmds :: [Either String Cmds] -> [Cmds]
+foundCmds [] = []
+foundCmds (x:ys) = case x of
+                           Right x -> x : foundCmds ys
+                           Left  _ -> foundCmds ys
 
-isRight :: Either a b -> Bool
-isRight (Left _) = False
-isRight (Right _) = True
+-- Change entered filename string to end with .tm, given a () or a lack of .tm
+checkEndChars :: String -> String
+checkEndChars []     = ""
+checkEndChars str = go (reverse str)
+                  where
+                  go ('m':'t':'.':xs) = str
+                  go (')':'(':xs) = (reverse xs) ++ "." ++ "t" ++ "m"
+                  go _  = str ++ "." ++ "t" ++ "m"
 
-validationFailed :: [Either String Cmds] -> [Either String Cmds]
-validationFailed = filter isLeft
-
-validationSucceeded :: [Either String Cmds] -> [Either String Cmds]
-validationSucceeded = filter isRight
+-- Helper to get cmds via a String entered in main
+-- Cmds -> State -> (CartPos,Track) 
+runFunc :: String -> (CartPos, Track) -> IO ()
+runFunc "mul" ct = runCmds mul 1 ct
+runFunc "pow" ct = runCmds pow 1 ct
+runFunc "bb2" ct = runCmds bb2Program 1 ct
+runFunc "bb3" ct = runCmds bb3Program 1 ct
+runFunc "bb3D2" ct = runCmds bb3D2Program 1 ct
+runFunc "bb4" ct = runCmds bb4Program 1 ct
+runFunc "bb5" ct = runCmds bb5Program 1 ct
+runFunc "easy" ct = runCmds easy 1 ct
+runFunc str ct = do fileContents <- readFile (checkEndChars str)
+                    case foundCmds (contentsToECmds fileContents) of
+                        []     -> print ("Error: " ++ str ++ " did not have any Turing Program state commands.")
+                        cmds@(x:ys) -> runCmds (concat cmds) 1 ct
 
 main = do
     putStrLn "Enter in one of the following commands:"
     putStrLn "mul, pow, bb# (replace # with a number 2-5), bb3D2, or easy."
     putStrLn "Note: mul does not accept any 0 arguments, and"
     putStrLn "      pow's exponent is the 1st arg and base the 2nd."
+    putStrLn "Alternatively, enter in the name of a .tm file to run."
     cmdToRun <- getLine
     putStrLn "Enter a cart position on the track. Use 1 for normal use."
     crtPos <- getLine
     putStrLn "Enter a track as a list (i.e, as numbers within square brackets), with each number representing the number of a block that has a 1 symbol. E.g. an argument of 3, 2 would be [1,2,3,5,6]."
     trackList <- getLine
-    runCmds (runFunc cmdToRun) 1 (read crtPos :: Int, Set.fromList (read trackList :: [Int]))
+    --runCmds (runFunc cmdToRun) 1 (read crtPos :: Int, Set.fromList (read trackList :: [Int]))
+    runFunc cmdToRun (read crtPos :: Int, Set.fromList (read trackList :: [Int]))
