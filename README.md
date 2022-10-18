@@ -38,7 +38,7 @@ A repo of Turing programs may be found at [https://github.com/ritterbush/turing-
 
 For Haskell files, first [install GHC](https://www.haskell.org/ghcup/). Then compile an `.hs` file with
 
-    ghc DataSet.hs --make -o TuringDataSet
+    ghc DataSet.hs --make -no-keep-hi-files -no-keep-o-files -o TuringDataSet
 
 where the final argument is the name of the executable to be created. And run it:
 
